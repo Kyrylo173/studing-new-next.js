@@ -28,10 +28,16 @@ export async function fetchLatestInvoices() {
       ORDER BY invoices.date DESC
       LIMIT 5`;
 
+    if (!data || !Array.isArray(data)) {
+      console.error('Unexpected DB response for latest invoices:', data);
+      return [];
+    }
+
     const latestInvoices = data.map((invoice) => ({
       ...invoice,
       amount: formatCurrency(invoice.amount),
     }));
+
     return latestInvoices;
   } catch (error) {
     console.error('Database Error:', error);
@@ -148,7 +154,7 @@ export async function fetchInvoiceById(id: string) {
       // Convert amount from cents to dollars
       amount: invoice.amount / 100,
     }));
-
+ console.log(invoice);
     return invoice[0];
   } catch (error) {
     console.error('Database Error:', error);
